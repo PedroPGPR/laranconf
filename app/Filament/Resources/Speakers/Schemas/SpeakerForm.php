@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Filament\Resources\Speakers\Schemas;
 
+use App\Models\Speaker;
 use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\MarkdownEditor;
@@ -34,23 +35,7 @@ class SpeakerForm
                     ->columnSpanFull()
                     ->searchable()
                     ->bulkToggleable()
-                    ->options([
-                        'business-leader' => 'Business Leader',
-                        'charisma' => 'Charisma',
-                        'first-time' => 'First Time',
-                        'hometown-hero' => 'Hometown Hero',
-                        'industry-expert' => 'Industry Expert',
-                        'inspirational' => 'Inspirational',
-                        'humanitarian' => 'Humanitarian',
-                        'laracasts-contributor' => 'Laracasts Contributor',
-                        'mentor' => 'Mentor',
-                        'open-source-contributor' => 'Open Source Contributor',
-                        'podcaster' => 'Podcaster',
-                        'public-speaker' => 'Public Speaker',
-                        'social-media-influencer' => 'Social Media Influencer',
-                        'thought-leader' => 'Thought Leader',
-                        'unique-perspective' => 'Unique perspective',
-                    ])
+                    ->options(Speaker::QUALIFICATIONS)
                     ->descriptions([
                         'business-leader' => 'Dudes who are CEO\'s',
                         'charisma' => 'Dudes who are charismatic',

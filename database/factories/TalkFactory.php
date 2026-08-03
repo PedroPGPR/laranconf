@@ -16,6 +16,7 @@ class TalkFactory extends Factory
             'title' => fake()->sentence(4),
             'abstract' => fake()->text(),
             'speaker_id' => Speaker::factory(),
+
         ];
     }
 }
