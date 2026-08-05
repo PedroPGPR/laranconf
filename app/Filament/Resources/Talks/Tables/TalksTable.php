@@ -6,8 +6,14 @@ namespace App\Filament\Resources\Talks\Tables;
 
 use App\Enums\TalkLength;
 use App\Enums\TalkStatus;
+use Filament\Actions\Action;
+use Filament\Actions\ActionGroup;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Actions\RestoreBulkAction;
 use Filament\Actions\ViewAction;
+use Filament\Notifications\Notification;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
@@ -23,6 +29,7 @@ class TalksTable
     public static function configure(Table $table): Table
     {
         return $table
+            ->persistFiltersInSession()
             ->columns(components: [
                 ImageColumn::make('speaker.avatar')
                     ->label('Avatar')
@@ -60,6 +67,7 @@ class TalksTable
                     ->sortable()
                     ->alignCenter(),
             ])
+            ->filtersTriggerAction(fn ($action) => $action->button()->label('Filters'))
             ->filters([
                 TernaryFilter::make('new_talk'),
                 SelectFilter::make('speaker')
@@ -75,7 +83,47 @@ class TalksTable
             ])
             ->recordActions([
                 ViewAction::make(),
-                EditAction::make(),
+                EditAction::make()
+                    ->slideOver(),
+                ActionGroup::make([
+                    Action::make('approve')
+                        ->visible(fn ($record) => $record->status === TalkStatus::SUBMITTED)
+                        ->icon('heroicon-o-check-circle')
+                        ->label('Approve')
+                        ->color('success')
+                        ->action(function ($record) {
+                            $record->update(['status' => TalkStatus::APPROVED]);
+                        })->after(function ($record) {
+                            Notification::make()
+                                ->success()
+                                ->duration(3000)
+                                ->title('Talk approved')
+                                ->body('The speaker was notified')
+                                ->send();
+                        }),
+                    Action::make('reject')
+                        ->visible(fn ($record) => $record->status === TalkStatus::SUBMITTED)
+                        ->icon('heroicon-o-no-symbol')
+                        ->label('Reject')
+                        ->color('danger')
+                        ->requiresConfirmation()
+                        ->action(function ($record) {
+                            $record->update(['status' => TalkStatus::APPROVED]);
+                        })->after(function ($record) {
+                            Notification::make()
+                                ->success()
+                                ->duration(3000)
+                                ->title('Talk rejected')
+                                ->body('The speaker was notified')
+                                ->send();
+                        }),
+                ])->extraAttributes(['class' => '!bg-red']),
+            ])
+            ->toolbarActions([
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
+                    RestoreBulkAction::make(),
+                ]),
             ]);
     }
 }

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Filament\Resources\Talks;
 
 use App\Filament\Resources\Talks\Pages\CreateTalk;
-use App\Filament\Resources\Talks\Pages\EditTalk;
 use App\Filament\Resources\Talks\Pages\ListTalks;
 use App\Filament\Resources\Talks\Pages\ViewTalk;
 use App\Filament\Resources\Talks\Schemas\TalkForm;
@@ -60,7 +59,7 @@ class TalkResource extends Resource
             'index' => ListTalks::route('/'),
             'create' => CreateTalk::route('/create'),
             'view' => ViewTalk::route('/{record}'),
-            'edit' => EditTalk::route('/{record}/edit'),
+            // 'edit' => EditTalk::route('/{record}/edit'),
         ];
     }
 }

@@ -6,8 +6,8 @@ namespace App\Filament\Resources\Speakers\Tables;
 
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
-use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
+use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
@@ -17,6 +17,10 @@ class SpeakersTable
     {
         return $table
             ->columns([
+                ImageColumn::make('speaker.avatar')
+                    ->label('Avatar')
+                    ->defaultImageUrl(fn ($record) => 'https://ui-avatars.com/api/?background=C800DF&color=FFFFFF&name='.urlencode((string) $record->name))
+                    ->circular(),
                 TextColumn::make('name')
                     ->searchable(),
                 TextColumn::make('email')
@@ -38,7 +42,6 @@ class SpeakersTable
             ])
             ->recordActions([
                 ViewAction::make(),
-                EditAction::make(),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
